@@ -1,0 +1,421 @@
+---
+title: "FRED Template"
+author: "Rudy Lazaro"
+date: "2025-10-29"
+output:
+  pdf_document: default
+  html_document: default
+editor_options:
+  markdown:
+    wrap: 72
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## R Markdown
+
+This is an R Markdown document. Markdown is a simple formatting syntax
+for authoring HTML, PDF, and MS Word documents. For more details on
+using R Markdown see <http://rmarkdown.rstudio.com>.
+
+When you click the **Knit** button a document will be generated that
+includes both content as well as the output of any embedded R code
+chunks within the document. You can embed an R code chunk like this:
+
+```{r cars}
+summary(cars)
+```
+
+## Including Plots
+
+You can also embed plots, for example:
+
+```{r pressure, echo=FALSE}
+plot(pressure)
+```
+
+Note that the `echo = FALSE` parameter was added to the code chunk to
+prevent printing of the R code that generated the plot.
+
+You can learn more about using R markdown files here
+<https://rmarkdown.rstudio.com/lesson-3.html>
+
+## Background
+
+The St Louis branch of the Federal Reserve System maintains an extensive
+database of U.S. economic data that is available to the public.
+Economists, business, and financial institutions rely on the Federal
+Reserve Economic Data (FRED) database to guide their organizations’
+behaviors.
+
+## Objective
+
+In module 3 we introduced the R programming language. We learned the
+general R syntax and how to create user defined functions that process
+strings, integers, and matrices. In module 4, we practiced using an R
+package called tidyverse to perform data analysis and visualization.
+Tidyverse is just one of many R packages that serve to multiply the
+analytical power of the language. In this activity, we will build on the
+progress of previous weeks to analyze data from the Federal Reserve
+Economic Data (FRED) database. A variety of open source packages have
+been developed to connect the FRED database to Application Programming
+Interfaces (APIs). In particular, we will use a package called fredr
+(lower case) to access FRED data in the RStudio API. Then we will use
+the skills learned in class to analyze and visualize the data. There are
+other tools for accessing FRED data, but RStudio is perhaps the most
+powerful.
+
+## Connecting to FRED in RStudio
+
+There are several required steps to connect RStudio API to the FRED
+database. Start early so you can work through the steps. Ask the
+instructor, your teammates, or schedule office hours if you need
+assistance.
+
+1.  Install the fredr package to your RStudio library. You can do this
+    in one of three ways. Option a is typically the easiest.
+    a.  Search fredr in the CRAN repository If prompted, you may need to
+        install dependency packages or update to a recent version of R.
+
+    b.  If you have already installed the popular devtools package, you
+        can conveniently use the command
+        `devtools::install_github("sboysel/fredr”)` If prompted, you may
+        need to install dependency packages or update to a recent
+        version of R.
+
+    c.  The brute force, and failsafe way to install a package to
+        RStudio is to save the files to your computer, then install them
+        to you library by browsing for them in RStudio. Use the default
+        path for “Install to Library” option.
+2.  Open the fredr package, and other required packages from your
+    library. If you have not already installed tidyverse and ggplot2,
+    simply follow the instructions for step 1. `library(fredr)`
+    `library(tidyverse)` `library(ggplot2)`
+
+Using the provided directions, edit the following code to connect to
+FRED
+
+```{r include = FALSE}
+#Install devtools and tidyverse from CRAN if needed
+install.packages("devtools", repos = "[http://cran.rstudio.com/](http://cran.rstudio.com/)")
+install.packages("tidyverse", repos = "[http://cran.rstudio.com/](http://cran.rstudio.com/)")
+
+#Open devtools package to help install fredr from github
+library(devtools)
+
+
+```{r include = FALSE}
+library(devtools)
+#Open tidyverse set of packages for analysis
+library(tidyverse)
+
+#Install fredr from github
+devtools::install_github("sboysel/fredr")
+
+#Open the newly install fredr package
+```
+
+
+```{r include = FALSE}
+```
+
+
+```{r include = FALSE}
+library(fredr)
+
+```
+
+3.  Create an account on FRED using this url:
+    <https://fredhelp.stlouisfed.org/fred/account/fred-account-features/register/>
+
+4.  Create a unique key. After creating your account, you will need a
+    unique key to access the database via RStudio. You can request a new
+    key, or view your existing keys at this url:
+    <https://fredaccount.stlouisfed.org/apikeys>
+
+5.  Request the data connection using your key.
+    `fredr_set_key("paste_my_key_here")` Use this url for more
+    information: <https://fred.stlouisfed.org/docs/api/api_key.html> Use
+    this url for more information:
+    <https://fred.stlouisfed.org/docs/api/api_key.html>
+
+```{r include = FALSE}
+fredr_set_key("63977c45ba443b92ed551669454907e9")
+
+
+```
+
+## Search for Data
+
+The documentation for using fredr can be found at this url:
+<https://github.com/sboysel/fredr> Notice that the page is a github
+repository. The contents of README.md are shown as the landing page.
+
+We now wish to search for the series ID of relevant data sets. You may
+find these online or search for them with fredr. Here we search for the
+top 5 data set related to the federal funds rate.
+
+```{r}
+popular_funds_series <- fredr_series_search_text(
+  search_text = "federal funds",
+  order_by = "popularity",
+  sort_order = "desc",
+  limit = 5
+)
+
+#print the search results
+string_of_results<-paste(c( popular_funds_series$id), collapse=', ' )
+print(paste(c("The top series id are: ", string_of_results)))
+
+
+```
+
+Save the series_id of the #1 result as a variable for later use. We also
+save the FFR data as variable for inspection
+
+```{r}
+popular_funds_series_id <- popular_funds_series$id[1]
+
+
+
+FFR_data<- fredr(
+  series_id = popular_funds_series_id, # you could manually type the series id as a string on this line
+  observation_start = as.Date("2003-01-01"),
+  observation_end = as.Date("2023-01-01")
+)
+
+print(FFR_data)
+
+
+```
+
+Now we want to plot our top result, which should have the series ID
+"FEDFUNDS". We can exploit a trick called the pipe operator, which is
+included in tidyverse.
+
+The pipe operator, %\>% is a clean way to pass an object into a
+function. Here we pass the contents of popular_funds_series_id into the
+`fredr()` function, and we pass the output of `fredr()` to ggplot.
+
+```{r}
+popular_funds_series_id %>%
+  fredr(
+    observation_start = as.Date("2003-01-01"),
+    observation_end = as.Date("2023-01-01")
+  ) %>%
+  ggplot(data = ., mapping = aes(x = date, y = value, color = series_id)) +
+  geom_line() +
+  labs(x = "Observation Date", y = "Rate", color = "Series")+
+  ggtitle("Federal Funds Rate\n(Effective)") +
+  theme(plot.title = element_text(hjust = 0.5))
+```
+
+Use this example to guide your responses to analysis tasks 1-6. Be sure
+that all plots are well formatted with titles, axis titles, and legends,
+as applicable. Submit your r markdown file as well as a pdf of the
+markdown file that shows all of your plots.
+
+## Analysis Tasks
+
+##  You are a financial analyst at a bank that sells mortgages on the
+# primary market. Your manager wants to understand how historical data can
+# serve as an indicator of the federal funds rate (FFR). The FFR is one of
+# several factors that drive the prime rate for home mortgages.
+
+# 1)  Plot the FFR for the past 20 years. Update dates in template as needed (1-6).
+
+```{r ffr_plot, echo=FALSE}
+library(fredr)
+library(ggplot2)
+
+popular_funds_series_id <- "FEDFUNDS"
+
+ffr <- fredr(
+  series_id = popular_funds_series_id,
+  observation_start = as.Date("2005-01-01"),
+  observation_end = as.Date("2025-01-01")
+)
+
+ffr_plot <- ggplot(data = ffr, aes(x = date, y = value, color = series_id)) +
+  geom_line() +
+  labs(x = "Observation Date", y = "FFR", color = "Series") +
+  ggtitle("Federal Funds Rate\n(Effective)") +
+  theme(plot.title = element_text(hjust = 0.5))
+
+# Display the plot
+ffr_plot
+```
+  
+  
+  
+# 2)  Plot the 10-year treasury bond rate for the past 20 years
+
+```{r Treasury, echo=FALSE}
+TreasuryBondData <- fredr(
+  series_id = "DFII10",   
+  observation_start = as.Date("2005-01-01"),
+  observation_end = as.Date("2025-01-01"))
+  
+  Treasury_plot <-
+ggplot(data = TreasuryBondData, aes(x = date, y = value, color = "10-Year Bond Yield")) +
+  geom_line() +
+  labs(
+    x = "Observation Date",
+    y = "10-Year Treasury Inflation-Indexed Bond Yield (%)",
+    color = "Series"
+  ) +
+  ggtitle("10-Year Treasury Inflation-Indexed Bond Yield (2005–2025)") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+  
+
+  Treasury_plot
+```
+
+# 3)  Plot the inflation rate for the past 20 years
+```{r Inflation, echo=FALSE}
+inflation_rate <- fredr(
+  series_id = "FPCPITOTLZGUSA",   
+  observation_start = as.Date("2005-01-01"),
+  observation_end = as.Date("2025-01-01"))
+  
+Inflation_plot <-
+ggplot(data = inflation_rate, aes(x = date, y = value, color = "Inflation Rate")) +
+  geom_line() +
+  labs(
+    x = "Observation Date",
+    y = "Inflation rate (%)",
+    color = "Series"
+  ) +
+  ggtitle("Inflation Rate (2005–2025)") +
+  theme_minimal() +
+  theme(plot.title = element_text(hjust = 0.5))
+
+
+Inflation_plot
+```
+
+# 4)  Plot the unemployment rate for the past 20 years
+```{r UNEMP, echo=FALSE}
+
+unemployment_rate <- fredr(
+  series_id = "UNRATE",   
+  observation_start = as.Date("2005-01-01"),
+  observation_end = as.Date("2025-01-01")
+)
+
+  Unemp_Plot <-
+  ggplot(data = unemployment_rate, aes(x = date, y = value, color = "UNEMP Rate")) +
+    geom_line() +
+    labs(
+      x = "Observation Date",
+      y = "Unemployment Rate (%)",
+      color = "Series"
+    ) +
+    ggtitle("Unemployment Rate (2005–2025)") +
+    theme_minimal() +
+    theme(plot.title = element_text(hjust = 0.5))
+  
+
+Unemp_Plot
+
+```
+
+# 
+# 5)  Provide a timeline that indicates U.S. recessions over the past 20
+#  years 
+
+```{r recessions, echo=FALSE}
+recessions <- fredr(series_id = "USREC", observation_start = as.Date("2005-01-01")
+,observation_end = as.Date("2025-01-01"))
+
+Recessions_Plot <-
+ggplot(recessions, aes(x = date, y = value)) +
+  geom_area(fill = "grey40", alpha = 0.6) +
+  scale_y_continuous(breaks = NULL) +  # remove y-axis labels
+  labs(
+    title = "U.S. Recessions (2005–2025)",
+    subtitle = "Gray shaded areas indicate U.S. recession periods",
+    x = "Year",
+    y = NULL,
+    caption = "Source: NBER via FRED (USREC)"
+  ) +
+  theme_minimal() +
+  theme(
+    panel.grid = element_blank(),
+    axis.ticks.y = element_blank()
+  )
+  
+
+
+Recessions_Plot
+
+```
+
+#
+6)  Combine any interesting aspects of the above information to a single
+#     plot. We will call this plot the “money-plot.” Explain why you
+#     crafted the money-plot as you did. Use the money-plot to provide
+#   analysis the mortgage market. Now your manager asks you for a
+#     prediction of the FFR and the mortgage market. Its not possible to
+#     know the future, but make a well reasoned educated guess from the
+#    data you have plotted.
+    library(dplyr)
+```{r Money_Plot, echo=FALSE}
+
+
+library(ggplot2)
+
+recessions <- recessions %>%
+  rename(Start = realtime_start , End = realtime_end)
+recessions <- data.frame(
+  start = as.Date(c("2007-12-01", "2020-02-01")),
+  end   = as.Date(c("2009-06-01", "2020-04-01"))
+)
+
+
+
+
+ 
+My_Money_Plot <-
+
+ggplot() +
+ 
+  geom_rect(
+    data = recessions,
+    aes(xmin = start, xmax = end, ymin = -Inf, ymax = Inf),
+    fill = "gray70", alpha = 0.5, inherit.aes = FALSE, show.legend = FALSE
+  ) +
+ 
+  geom_line(data = inflation_rate, aes(x = date, y = value, color = "Inflation Rate"), size = 1) +
+  geom_line(data = ffr, aes(x = date, y = value, color = "Federal Funds Rate"), size = 1) +
+  
+  labs(
+    title = "Money Plot: FFR, Inflation, and Recessions (2005–2025)",
+    subtitle = "Gray shaded areas indicate U.S. recession periods",
+    x = "Year",
+    y = "Percent",
+    color = NULL  # <-- This change removes the legend title
+  ) +
+  
+  scale_color_manual(values = c("Federal Funds Rate" = "blue", "Inflation Rate" = "red")) +
+  theme_minimal(base_size = 13) +
+  theme(
+    plot.title = element_text(face = "bold"),
+    legend.position = "bottom"
+  )
+  
+
+
+My_Money_Plot
+
+```
+
+tinytex::install_tinytex()
+
+
+
+# For the money plot, I chose to combine FFR, the inflation rate, and the U.S recession periods. I chose these variables because they illustrate the relationship between both monetary policy and macroeconomic conditions. In the graph, we see that the FFR is high during periods of high inflation, but when recessions occur, there is a sharp drop-off to stimulate growth. This impacts the mortgage market because high FFRs usually lead to high mortgage rates, which reduces housing affordability and slows borrowing activity. My prediction is that the FED will slowly lower the FFR in the next year. This could lead to a slight decline in mortgage rates; however, if inflation rebounds, the FED may keep rates elevated, and this can affect mortgage affordability.#
+
