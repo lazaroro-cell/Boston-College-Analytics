@@ -1,10 +1,10 @@
 # Boston College Applied Analytics
 
-Graduate-level coursework and projects from the M.S. Applied Economics / Applied Analytics dual-degree program at Boston College.
+Coursework and projects from the M.S. Applied Economics / Applied Analytics dual-degree program at Boston College.
 
 **Program:** Master of Science in Applied Economics / Applied Analytics  
-**Expected Graduation:** May 2027  
-**Current GPA:** 4.0
+**Expected Graduation:** By December 2027  
+**Current GPA:** 3.55
 
 ---
 
@@ -46,10 +46,10 @@ Boston-College-Analytics/
 
 ## Technical Skills Development
 
-This repository demonstrates graduate-level proficiency in:
-- **Programming Languages:** Python (advanced), R (statistical modeling), SQL
+What this repository contains:
+- **Programming Languages:** Python, R, SQL
 - **Mathematical Foundations:** Linear algebra, optimization, probability theory
-- **Data Analysis:** Large-scale data processing, econometric modeling, machine learning
+- **Data Analysis:** Data cleaning and validation, econometric modeling, regression analysis
 - **Research Methods:** Reproducible workflows, version control, documentation
 
 ---
@@ -67,7 +67,7 @@ As coursework progresses, this repository will include:
 ## Academic Background
 
 **Undergraduate:** B.S. Economics, California State University, Bakersfield (2025)  
-**Graduate:** M.S. Applied Economics / Applied Analytics, Boston College (2027)  
+**Graduate:** M.S. Applied Economics / Applied Analytics, Boston College (expected by December 2027)  
 **Study Abroad:** Radboud University, Netherlands (2024)
 
 ---

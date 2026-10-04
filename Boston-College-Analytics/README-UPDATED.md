@@ -1,10 +1,10 @@
 # Boston College Applied Analytics
 
-Graduate-level coursework and projects from the M.S. Applied Economics / Applied Analytics dual-degree program at Boston College.
+Coursework and projects from the M.S. Applied Economics / Applied Analytics dual-degree program at Boston College.
 
 **Program:** Master of Science in Applied Economics / Applied Analytics  
-**Expected Graduation:** May 2027  
-**Current GPA:** 4.0
+**Expected Graduation:** By December 2027  
+**Current GPA:** 3.55
 
 ---
 
@@ -36,7 +36,7 @@ Boston-College-Analytics/
 **Status:** Completed Fall 2025
 
 **Topics Covered:**
-- Python programming for data analysis and machine learning
+- Python programming for data analysis and LLM tooling
 - R statistical computing and data visualization
 - SQL database queries and data management
 - Tableau dashboard creation
@@ -45,8 +45,8 @@ Boston-College-Analytics/
 **Coursework Files:**
 
 #### Python Projects
-- **`llm-homework.ipynb`** - Large language model analysis and implementation
-- **`diabetes-analysis.ipynb`** - Pima Indians diabetes dataset analysis using statistical methods and machine learning
+- **`llm-homework.ipynb`** - LLM analytics pipeline coursework: Ollama running Mistral, a LangChain prompt template, NLTK sentiment and parts-of-speech analysis, and a BLEU score evaluating generated text against Wikipedia reference data
+- **`diabetes-analysis.ipynb`** - Exploratory analysis of the Pima Indians diabetes dataset with pandas, numpy, matplotlib and seaborn
 
 #### R Projects
 - **`homework-1.R`** - Introduction to R programming and data manipulation
@@ -75,10 +75,10 @@ Collaborative analysis of MLB player performance using Baseball Savant data.
 
 ## Technical Skills Development
 
-This repository demonstrates graduate-level proficiency in:
-- **Programming Languages:** Python (advanced), R (statistical modeling), SQL
+What this repository contains:
+- **Programming Languages:** Python, R, SQL
 - **Mathematical Foundations:** Linear algebra, optimization, probability theory
-- **Data Analysis:** Large-scale data processing, econometric modeling, machine learning
+- **Data Analysis:** Data cleaning and validation, econometric modeling, regression analysis
 - **Research Methods:** Reproducible workflows, version control, documentation
 
 ---
@@ -96,7 +96,7 @@ As coursework progresses, this repository will include:
 ## Academic Background
 
 **Undergraduate:** B.S. Economics, California State University, Bakersfield (2025)  
-**Graduate:** M.S. Applied Economics / Applied Analytics, Boston College (2027)  
+**Graduate:** M.S. Applied Economics / Applied Analytics, Boston College (expected by December 2027)  
 **Study Abroad:** Radboud University, Netherlands (2024)
 
 ---
